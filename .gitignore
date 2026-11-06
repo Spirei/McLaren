@@ -3,6 +3,8 @@ node_modules
 .DS_Store
 .env
 .env.local
-public/uploads
+public/uploads/**
+!public/uploads/mclaren/
+!public/uploads/mclaren/**
 *.log
 tsconfig.tsbuildinfo

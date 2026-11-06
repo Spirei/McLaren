@@ -342,7 +342,7 @@ export default function ModelBookLibrary({ existing, initialBookId = "", initial
 
   return <main className="mbl" style={{ "--book-color": palette.cover, "--book-ink": palette.ink } as React.CSSProperties}>
     <header className="mbl-header">
-      <Link href="/" className="mbl-brand" aria-label="返回展示台" onClick={(event) => { if (bookId === "new" && unsavedDraft && !confirmDiscard()) event.preventDefault(); }}>M<span>CLAREN</span><i> / </i>MODEL LIBRARY</Link>
+      <Link href="/" className="mbl-brand" aria-label="返回 Alcor 首页" onClick={(event) => { if (bookId === "new" && unsavedDraft && !confirmDiscard()) event.preventDefault(); }}>A<span>LCOR</span><i> / </i>MODEL LIBRARY</Link>
       <div className="mbl-header-right"><span>{String(existing.length).padStart(2, "0")} VOLUMES</span><Link href="/showcase/import" onClick={(event) => { if (bookId === "new" && unsavedDraft && !confirmDiscard()) event.preventDefault(); }}>管理台 ↗</Link></div>
     </header>
 

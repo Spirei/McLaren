@@ -1,0 +1,182 @@
+{
+  "version": 1,
+  "order": [
+    "gulf2022",
+    "mcl35m",
+    "mp46",
+    "mp45",
+    "f1-2025-mclaren-mcl39",
+    "aston-martin-f1-amr23-2023"
+  ],
+  "models": [
+    {
+      "id": "gulf2022",
+      "label": "Gulf F1",
+      "note": "2022",
+      "file": "gulf_mclaren_f1_2022_car.glb",
+      "params": {
+        "length": 5.6,
+        "maxTextureSize": 2048,
+        "wheelPattern": "rims|tyres",
+        "wheelAxis": "x",
+        "wheelLateral": "x",
+        "wheelLongitudinal": "y",
+        "materialRules": [
+          {
+            "match": "tyres|tyre",
+            "metalness": 0,
+            "roughness": 0.85
+          },
+          {
+            "match": "rims",
+            "metalness": 1,
+            "roughness": 0.3
+          },
+          {
+            "match": "carbon",
+            "metalness": 0.35,
+            "roughness": 0.45
+          }
+        ]
+      },
+      "createdAt": "2026-09-19T17:07:04.895Z",
+      "updatedAt": "2026-09-19T17:07:04.895Z"
+    },
+    {
+      "id": "mp45",
+      "label": "MP4/5",
+      "note": "1989",
+      "file": "mclaren_mp45__formula_1.glb",
+      "params": {
+        "length": 4.6,
+        "maxTextureSize": 2048,
+        "wheelPattern": "wheels",
+        "wheelAxis": "x",
+        "wheelLateral": "x",
+        "wheelLongitudinal": "z",
+        "materialRules": [
+          {
+            "match": "wheels",
+            "metalness": 0.2,
+            "roughness": 0.8
+          }
+        ]
+      },
+      "createdAt": "2026-09-19T17:07:04.895Z",
+      "updatedAt": "2026-09-19T18:05:16.562Z",
+      "cover": "/uploads/mclaren/covers/mp45-1789841116560.png"
+    },
+    {
+      "id": "mp46",
+      "label": "MP4/6",
+      "note": "1991",
+      "file": "mclaren_mp46.glb",
+      "params": {
+        "length": 4.6,
+        "maxTextureSize": 2048,
+        "wireframe": {
+          "enabled": false,
+          "filterThinTrim": true,
+          "cleanBaseEdges": true,
+          "maxEdge": 0.22,
+          "maxDepth": 1,
+          "maxComponentTriangles": 5000,
+          "triangleBudget": 250000,
+          "trimMaxTriangles": 64,
+          "trimThickness": 0.04,
+          "trimWidth": 0.2,
+          "trimLength": 0.25,
+          "edgeThreshold": 35
+        },
+        "wheelAxis": "x",
+        "wheelLateral": "x",
+        "wheelLongitudinal": "z",
+        "wheelPattern": "tyre",
+        "materialRules": [
+          {
+            "match": "tyre",
+            "metalness": 0,
+            "roughness": 0.85
+          },
+          {
+            "match": "chrome",
+            "metalness": 1,
+            "roughness": 0.25
+          }
+        ]
+      },
+      "createdAt": "2026-09-19T17:07:04.895Z",
+      "updatedAt": "2026-09-20T21:15:47.761Z"
+    },
+    {
+      "id": "f1-2025-mclaren-mcl39",
+      "label": "MCL39",
+      "note": "2026",
+      "file": "f1_2025_mclaren_mcl39-84fce9d8.glb",
+      "params": {
+        "length": 5.6,
+        "maxTextureSize": 4096,
+        "envMapIntensity": 1,
+        "wireframe": {
+          "enabled": true,
+          "filterThinTrim": true,
+          "cleanBaseEdges": false,
+          "maxEdge": 0.14,
+          "maxDepth": 2,
+          "maxComponentTriangles": 5000,
+          "triangleBudget": 1000000,
+          "trimMaxTriangles": 64,
+          "trimThickness": 0.04,
+          "trimWidth": 0.2,
+          "trimLength": 0.25,
+          "edgeThreshold": 12
+        },
+        "wheelAxis": "x",
+        "wheelLateral": "x",
+        "wheelLongitudinal": "y",
+        "wheelPattern": "^(?:wheel_screw\\.001|wheel_screw|rear_tire|wheel_rim|rear_wheel_cover|wheel_nut|front_tire|front_wheel_cover)$"
+      },
+      "createdAt": "2026-09-21T17:17:07.597Z",
+      "updatedAt": "2026-09-21T17:19:02.092Z"
+    },
+    {
+      "id": "aston-martin-f1-amr23-2023",
+      "label": "F1 AMR23",
+      "note": "2026",
+      "file": "aston_martin_f1_amr23_2023-336b965a.glb",
+      "params": {
+        "length": 5.6,
+        "topKmh": 340,
+        "maxTextureSize": 4096,
+        "clearcoatRoughness": 0.3,
+        "envMapIntensity": 1,
+        "wireframe": {
+          "enabled": true,
+          "filterThinTrim": true,
+          "cleanBaseEdges": false,
+          "maxEdge": 0.14,
+          "maxDepth": 2,
+          "maxComponentTriangles": 5000,
+          "triangleBudget": 1000000,
+          "trimMaxTriangles": 64,
+          "trimThickness": 0.04,
+          "trimWidth": 0.2,
+          "trimLength": 0.25,
+          "edgeThreshold": 12
+        },
+        "wheelAxis": "x",
+        "wheelLateral": "x",
+        "wheelLongitudinal": "y",
+        "wheelPattern": "^(?:Body_Baked)$"
+      },
+      "createdAt": "2026-09-25T06:01:37.344Z",
+      "updatedAt": "2026-09-25T06:01:37.344Z"
+    }
+  ],
+  "builtinMeta": {},
+  "ignoredFiles": [],
+  "hiddenIds": [
+    "f1-2025-mclaren-mcl39",
+    "mp45"
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "sourceBytes": 67748416,
+  "sourceMtimeMs": 1789819447046.6626,
+  "sourceSha256": "bf491ddf09a085172519e2a0a578f693aed27b717e76d4a4dfba092a9fa2fd04",
+  "rgbaBytes": 492131656,
+  "textures": [
+    {
+      "width": 1024,
+      "height": 1024,
+      "compressed": false
+    },
+    {
+      "width": 4096,
+      "height": 4096,
+      "compressed": false
+    },
+    {
+      "width": 8192,
+      "height": 8192,
+      "compressed": false
+    },
+    {
+      "width": 1024,
+      "height": 1024,
+      "compressed": false
+    },
+    {
+      "width": 2048,
+      "height": 2048,
+      "compressed": false
+    },
+    {
+      "width": 512,
+      "height": 512,
+      "compressed": false
+    },
+    {
+      "width": 512,
+      "height": 512,
+      "compressed": false
+    },
+    {
+      "width": 1024,
+      "height": 1024,
+      "compressed": false
+    },
+    {
+      "width": 512,
+      "height": 512,
+      "compressed": false
+    },
+    {
+      "width": 512,
+      "height": 512,
+      "compressed": false
+    }
+  ],
+  "needsGpu": true,
+  "outputBytes": 15556472,
+  "outputSha256": "bdacfffc7d1d9af21390f400f33b533a46260e20a1908682a5ce1f5af87403b3",
+  "mode": "UASTC level 3, RDO off, Zstd 18; meshopt geometry for large models",
+  "preservesTextureDimensions": true,
+  "preservesGeometry": false,
+  "preservesTopology": true,
+  "geometryOptimized": true,
+  "pixelLossless": false,
+  "verified": {
+    "accessors": 176,
+    "textures": [
+      {
+        "name": "",
+        "width": 1024,
+        "height": 1024,
+        "levels": 11
+      },
+      {
+        "name": "",
+        "width": 4096,
+        "height": 4096,
+        "levels": 13
+      },
+      {
+        "name": "",
+        "width": 8192,
+        "height": 8192,
+        "levels": 14
+      },
+      {
+        "name": "",
+        "width": 1024,
+        "height": 1024,
+        "levels": 11
+      },
+      {
+        "name": "",
+        "width": 2048,
+        "height": 2048,
+        "levels": 12
+      },
+      {
+        "name": "",
+        "width": 512,
+        "height": 512,
+        "levels": 10
+      },
+      {
+        "name": "",
+        "width": 512,
+        "height": 512,
+        "levels": 10
+      },
+      {
+        "name": "",
+        "width": 1024,
+        "height": 1024,
+        "levels": 11
+      },
+      {
+        "name": "",
+        "width": 512,
+        "height": 512,
+        "levels": 10
+      },
+      {
+        "name": "",
+        "width": 512,
+        "height": 512,
+        "levels": 10
+      }
+    ],
+    "rgbaBytes": 492131656,
+    "blockBytes": 123033184
+  },
+  "generatedAt": "2026-09-24T23:09:34.458Z"
+}

@@ -1,0 +1,93 @@
+{
+  "sourceBytes": 23351708,
+  "sourceMtimeMs": 1790038764000,
+  "sourceSha256": "c4716fbc6eb56feaae84fb7119119bf5f8dc25621d5425dee9f6f0b6599c3cba",
+  "rgbaBytes": 329951908,
+  "textures": [
+    {
+      "width": 4096,
+      "height": 4096
+    },
+    {
+      "width": 2048,
+      "height": 2048
+    },
+    {
+      "width": 2048,
+      "height": 2048
+    },
+    {
+      "width": 4096,
+      "height": 4096
+    },
+    {
+      "width": 4096,
+      "height": 4096
+    },
+    {
+      "width": 1024,
+      "height": 2048
+    },
+    {
+      "width": 1024,
+      "height": 1024
+    }
+  ],
+  "needsGpu": true,
+  "outputBytes": 12901116,
+  "outputSha256": "37fc2bfaf4642b732a9cda547a4a97d38dc02b05d43a325e7e7d650a606a0ec5",
+  "mode": "UASTC level 3, RDO off, Zstd 18",
+  "preservesTextureDimensions": true,
+  "preservesGeometry": true,
+  "pixelLossless": false,
+  "verified": {
+    "accessors": 32,
+    "textures": [
+      {
+        "name": "",
+        "width": 4096,
+        "height": 4096,
+        "levels": 13
+      },
+      {
+        "name": "",
+        "width": 2048,
+        "height": 2048,
+        "levels": 12
+      },
+      {
+        "name": "",
+        "width": 2048,
+        "height": 2048,
+        "levels": 12
+      },
+      {
+        "name": "",
+        "width": 4096,
+        "height": 4096,
+        "levels": 13
+      },
+      {
+        "name": "",
+        "width": 4096,
+        "height": 4096,
+        "levels": 13
+      },
+      {
+        "name": "",
+        "width": 1024,
+        "height": 2048,
+        "levels": 12
+      },
+      {
+        "name": "",
+        "width": 1024,
+        "height": 1024,
+        "levels": 11
+      }
+    ],
+    "rgbaBytes": 329951908,
+    "blockBytes": 82488176
+  },
+  "generatedAt": "2026-09-21T17:44:16.172Z"
+}

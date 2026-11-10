@@ -31,6 +31,28 @@ const DRIVE_CAMERA_OPTIONS: Array<{ key: ShowcaseDriveCamera; label: string }> =
 ];
 /** 用户置顶的默认机位（进度 + 拖拽角度 + 缩放），刷新 / 重开页面都回到这里 */
 const PIN_KEY = "fire:showcase:pose";
+const LIVE_POSE_KEY = "fire:showcase:live-pose";
+const PHASE_KEY = "fire:showcase:phase";
+const FREE_CAMERA_KEY = "fire:showcase:free-camera";
+const ORBIT_KEY = "fire:showcase:orbit";
+const STUDIO_KEY = "fire:showcase:studio";
+const ZOOM_MODE_KEY = "fire:showcase:zoom-mode";
+const ACCENT_KEY = "fire:showcase:accent";
+const ACCENTS = [
+  { id: "blue", label: "蓝", hex: "#2481CD" },
+  { id: "green", label: "绿", hex: "#3C9A45" },
+  { id: "rose", label: "粉", hex: "#E56B8C" },
+  { id: "violet", label: "紫", hex: "#8E79D8" },
+  { id: "blush", label: "桃", hex: "#F08AB4" },
+  { id: "olive", label: "橄", hex: "#6C9A3A" },
+  { id: "cyan", label: "青", hex: "#3CB4D4" },
+  { id: "papaya", label: "橙", hex: "#E87722" },
+] as const;
+type AccentId = (typeof ACCENTS)[number]["id"] | "custom";
+function accentHex(id: string, custom: string) {
+  if (id === "custom" && /^#[0-9a-fA-F]{6}$/.test(custom)) return custom;
+  return ACCENTS.find(item => item.id === id)?.hex ?? ACCENTS[0].hex;
+}
 const WIRE_MODE_KEY = "fire:showcase:wire-mode";
 const WIRE_COLOR_KEY = "fire:showcase:wire-color";
 const DISC_STYLE_KEY = "fire:showcase:disc-style";
@@ -118,8 +140,8 @@ export default function ShowcaseStage({
   const pendingModelRef = useRef<string | null>(null);
   const qualitySwitchRef = useRef(0);
 
-  const [phase, setPhase] = useState(0);
-  const [navPhase, setNavPhase] = useState(0);
+  const [navPhase, setNavPhase] = usePersistedState(PHASE_KEY, 0);
+  const [phase, setPhase] = useState(navPhase);
   const pendingNavPhaseRef = useRef<number | null>(null);
   const [textVisible, setTextVisible] = useState(true);
   const [loadRatio, setLoadRatio] = useState(0);
@@ -166,9 +188,10 @@ export default function ShowcaseStage({
   /** 频谱可视化是否接手（接手后关掉 CSS 兜底动画，避免动画盖住每帧的 transform） */
   const [waveLive, setWaveLive] = useState(false);
   // 360° 环视（自动绕车）与影棚（明亮摄影棚）：两个胶囊以前只是文字，现在是真的开关
-  const [orbit, setOrbit] = useState(false);
-  const [freeCamera, setFreeCamera] = useState(false);
-  const freeCameraRef = useRef(false);
+  const [orbit, setOrbit] = usePersistedState(ORBIT_KEY, false);
+  const [freeCamera, setFreeCamera] = usePersistedState(FREE_CAMERA_KEY, false);
+  const freeCameraRef = useRef(freeCamera);
+  freeCameraRef.current = freeCamera;
   const [inspector, setInspector] = useState(false);
   const [immersiveView, setImmersiveView] = useState(false);
   useEffect(() => {
@@ -252,7 +275,15 @@ export default function ShowcaseStage({
     wireRef.current = { mode, color };
     if (inspectorRef.current) handleRef.current?.setWireframe(mode, color);
   };
-  const [studio, setStudio] = useState(false);
+  const [studio, setStudio] = usePersistedState(STUDIO_KEY, false);
+  const [zoomModeOn, setZoomModeOn] = usePersistedState(ZOOM_MODE_KEY, false);
+  const [accentId, setAccentId] = usePersistedState<AccentId>(ACCENT_KEY, "papaya");
+  const [customAccent, setCustomAccent] = usePersistedState("fire:showcase:accent-custom", "#2481CD");
+  const [accentOpen, setAccentOpen] = useState(false);
+  const accentHexValue = accentHex(accentId, customAccent);
+  const [livePose, setLivePose] = usePersistedState<ReturnType<ShowcaseHandle["readPose"]> | null>(LIVE_POSE_KEY, null);
+  const livePoseRef = useRef(livePose);
+  livePoseRef.current = livePose;
   const [discStyle, setDiscStyle] = usePersistedState<ShowcaseDiscStyle>(DISC_STYLE_KEY, "chrono");
   const [discChosen, setDiscChosen] = usePersistedState(DISC_CHOSEN_KEY, false);
   const [mobileDiscDefault, setMobileDiscDefault] = useState(false);
@@ -286,8 +317,10 @@ export default function ShowcaseStage({
     try { sessionStorage.removeItem("fire:showcase:pending-heavy-load"); } catch { /* 存储不可用 */ }
   }, []);
   // 引擎是异步创建的，点得比它早就先把状态存下来，创建完再补上
-  const orbitRef = useRef(false);
-  const studioRef = useRef(false);
+  const orbitRef = useRef(orbit);
+  const studioRef = useRef(studio);
+  orbitRef.current = orbit;
+  studioRef.current = studio;
   // 用户置顶的默认机位：默认隐藏，鼠标划过左下角胶囊才显示开关
   const [pinnedPose, setPinnedPose] = usePersistedState<ShowcasePose | null>(PIN_KEY, null);
   const pinnedPoseRef = useRef<ShowcasePose | null>(pinnedPose);
@@ -360,7 +393,8 @@ export default function ShowcaseStage({
   const [rebuild, setRebuild] = useState(0);
   const [retry, setRetry] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const phaseRef = useRef(0);
+  const phaseRef = useRef(navPhase);
+  phaseRef.current = phase;
   const fadeTimer = useRef<number | null>(null);
 
   const handlePhase = useCallback((index: number) => {
@@ -561,6 +595,10 @@ export default function ShowcaseStage({
               setOrbit(false);
             }
           },
+          onViewChange: () => {
+            const pose = handleRef.current?.readPose();
+            if (pose) setLivePose(pose);
+          },
           onResetView: () => {
             // 双击复位：置顶机位是「进度 + 角度 + 缩放」，角度引擎已经调好，
             // 这里同步章节进度，才真的回到用户置顶的那一帧
@@ -617,6 +655,14 @@ export default function ShowcaseStage({
         handle.setOrbit(orbitRef.current);
         handle.setHomePose(pinnedPoseRef.current);
         handle.setFreeCamera(freeCameraRef.current);
+        handle.setZoomMode(zoomModeOn);
+        const remembered = livePoseRef.current;
+        if (remembered) {
+          handle.applyPose(remembered);
+          handle.snapProgress(remembered.p);
+        } else if (navPhase > 0) {
+          handle.snapProgress(Math.min(0.999, (cfg.phases[navPhase]?.at ?? 0) + 0.006));
+        }
         handle.setWireframe(wireRef.current.mode, wireRef.current.color);
         handle.setDiscStyle(discStyleRef.current);
         handle.setDriveCamera(driveCameraRef.current);
@@ -1074,7 +1120,7 @@ export default function ShowcaseStage({
   // 影棚（明亮摄影棚）下画面是亮的，HUD 文字要跟着换成浅色系，否则白字压在白底上看不见
   return (
     <div className={`showcase ${freeCamera ? "sc-free" : ""} ${theme === "light" || studio ? "light" : ""} ${inspector ? "sc-inspecting" : ""} ${racing || driving ? "sc-immersive" : ""} ${immersiveView ? "sc-view-immersive" : ""} ${leftDrawerOpen || rightDrawerOpen ? "sc-drawer-open" : ""} ${className}`}
-      style={{ "--sc-car-accent": modelAccent(config.assets.model) } as React.CSSProperties}>
+      style={{ "--sc-car-accent": modelAccent(config.assets.model), "--sc-theme": accentHexValue, "--site-accent": accentHexValue.replace("#", "").match(/../g)?.map(part => String(parseInt(part, 16))).join(" ") } as React.CSSProperties}>
       <div className="sc-scroll" ref={scrollRef}>
         <div className="sc-stage" ref={stageRef}>
           <div className="sc-canvas-wrap" ref={canvasWrapRef} />
@@ -1160,6 +1206,22 @@ export default function ShowcaseStage({
               <button type="button" className="sc-tool fire-cap" onClick={() => setImmersiveView(true)} aria-label="进入沉浸式" title="沉浸式观看">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" /></svg>
               </button>
+              <div className="sc-accent">
+                <button type="button" className="sc-tool fire-cap sc-accent-trigger" aria-label="主题配色" aria-expanded={accentOpen} title="主题配色" onClick={() => setAccentOpen(open => !open)}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M12 3.2a8.8 8.8 0 1 0 5.7 15.5c.7-.5 1.1-1.3 1.1-2.1 0-1.5-1.2-2.6-2.7-2.6h-1.2A2.2 2.2 0 0 1 12.7 12 2.2 2.2 0 0 0 14.9 9.8H16a4.6 4.6 0 0 0 0-1.5A8.8 8.8 0 0 0 12 3.2Z" />
+                    <circle cx="7.7" cy="10.2" r=".8" fill="currentColor" stroke="none" />
+                    <circle cx="10.2" cy="7.5" r=".8" fill="currentColor" stroke="none" />
+                    <circle cx="13.4" cy="8.1" r=".8" fill={accentHexValue} stroke="none" />
+                  </svg>
+                </button>
+                {accentOpen && <div className="sc-accent-row" role="listbox" aria-label="主题配色">
+                  <label className={`sc-accent-dot custom${accentId === "custom" ? " on" : ""}`} title="自定义颜色">
+                    <input type="color" value={/^#[0-9a-fA-F]{6}$/.test(customAccent) ? customAccent : "#2481CD"} aria-label="自定义颜色" onChange={(event) => { setCustomAccent(event.target.value); setAccentId("custom"); }} />
+                  </label>
+                  {ACCENTS.map(item => <button key={item.id} type="button" className={accentId === item.id ? "on" : ""} style={{ background: item.hex }} aria-label={item.label} aria-pressed={accentId === item.id} onClick={() => { setAccentId(item.id); setAccentOpen(false); }} />)}
+                </div>}
+              </div>
               <button
                 type="button"
                 className="sc-tool fire-cap"
@@ -1257,7 +1319,8 @@ export default function ShowcaseStage({
                 type="button"
                 className="sc-pill sc-zoom-mode fire-cap"
                 ref={zoomModeRef}
-                aria-pressed="false"
+                aria-pressed={zoomModeOn ? "true" : "false"}
+                onClick={() => setZoomModeOn(on => !on)}
                 title="打开后普通滚轮 / 双指滚动就是放大缩小（快捷键 Z）"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">

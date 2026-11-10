@@ -2840,6 +2840,7 @@ export function createShowcaseScene(options: ShowcaseOptions): ShowcaseHandle {
     }
     dragging = false; dragByTouch = false; dragPan = false; dragZoom = false; dragPointer = null;
     if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
+    options.onViewChange?.();
   };
   const cancelInteraction = () => {
     dragging = false; dragPan = false; dragZoom = false; dragPointer = null; touches.clear();
@@ -2920,10 +2921,17 @@ export function createShowcaseScene(options: ShowcaseOptions): ShowcaseHandle {
       focusAt(e.clientX, e.clientY);
     }
   };
-  canvas.addEventListener("wheel", onWheel, { passive: false });
+  let wheelMemory = 0;
+  const rememberWheel = (event: WheelEvent) => {
+    onWheel(event);
+    window.clearTimeout(wheelMemory);
+    wheelMemory = window.setTimeout(() => options.onViewChange?.(), 280);
+  };
+  canvas.addEventListener("wheel", rememberWheel, { passive: false });
   canvas.addEventListener("dblclick", onDoubleClick);
   cleanups.push(() => {
-    canvas.removeEventListener("wheel", onWheel);
+    canvas.removeEventListener("wheel", rememberWheel);
+    window.clearTimeout(wheelMemory);
     canvas.removeEventListener("dblclick", onDoubleClick);
   });
 
@@ -3642,7 +3650,7 @@ export function createShowcaseScene(options: ShowcaseOptions): ShowcaseHandle {
       invalidateInspector();
     },
     /** 当前机位：置顶时把这几项一起存下来 */
-    readPose: () => ({ p: +pSmooth.toFixed(4), yaw: +userYaw.toFixed(2), pitch: +userPitch.toFixed(4), zoom: +zoom.toFixed(3), focus: [focusOffset.x, focusOffset.y, focusOffset.z].map(value => +value.toFixed(4)) as [number, number, number], distance: +viewDistance.toFixed(3), elevation: +viewElevation.toFixed(3) }),
+    readPose: () => ({ p: +progress().toFixed(4), yaw: +userYaw.toFixed(2), pitch: +userPitch.toFixed(4), zoom: +zoom.toFixed(3), focus: [focusOffset.x, focusOffset.y, focusOffset.z].map(value => +value.toFixed(4)) as [number, number, number], distance: +viewDistance.toFixed(3), elevation: +viewElevation.toFixed(3) }),
     applyPose: (pose) => {
       if (typeof pose.yaw === "number" && Number.isFinite(pose.yaw)) {
         userYaw = pose.yaw;
@@ -3679,7 +3687,17 @@ export function createShowcaseScene(options: ShowcaseOptions): ShowcaseHandle {
         const steps = Math.max(1, Math.round(settle * 60));
         for (let i = 0; i < steps; i += 1) render(p, 1 / 60);
       }
+      options.onViewChange?.();
     },
+    snapProgress: (p: number) => {
+      const next = clamp(p, 0, 1);
+      viewerProgress = next;
+      freeCameraProgress = next;
+      pSmooth = next;
+      pVel = 0;
+      invalidateInspector();
+    },
+    setZoomMode: (on: boolean) => setZoomMode(on),
   debug: () => ({
     asset: CFG.assets.model,
     textureLimit: mountedTextureLimit,

@@ -398,6 +398,8 @@ export interface ShowcaseOptions {
   onContextLost?: () => void;
   /** 双击复位：引擎已把角度 / 缩放调到置顶机位，这里由组件恢复置顶章节进度 */
   onResetView?: () => void;
+  /** 拖拽、滚轮或切章节结束后，把当前车的机位交给界面保存。 */
+  onViewChange?: () => void;
   onError?: (message: string) => void;
 }
 
@@ -437,6 +439,9 @@ export interface ShowcaseHandle {
   setHomePose: (pose: { p?: number; yaw?: number; pitch?: number; zoom?: number; focus?: [number, number, number]; distance?: number; elevation?: number } | null) => void;
   /** 设置章节进度（导航、复位与调试共用） */
   setProgress: (p: number, settle?: number) => void;
+  /** 刷新后直接落到已记住的进度，不从第 0 章滑过去。 */
+  snapProgress: (p: number) => void;
+  setZoomMode: (on: boolean) => void;
   /** 调试用：当前平滑后的进度、速度、渲染倍率、冲刺与缩放状态 */
   debug: () => {
     asset: string;

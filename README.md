@@ -20,6 +20,8 @@ npm run dev
 
 开发地址是 `http://127.0.0.1:3100`。
 
+使用方式见 `docs/教程.md`，页面和三种展示模式的约定见 `docs/规范.md`。
+
 本机压缩工具仍在 `tools/model-optimizer`：
 
 ```bash

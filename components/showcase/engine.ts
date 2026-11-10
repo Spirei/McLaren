@@ -37,6 +37,29 @@ import type {
   ShowcaseOptions
 } from "./types";
 
+/** ImageBitmapLoader 用 fetch 读内嵌贴图。带 credentials 的 blob 请求会被浏览器拒绝。 */
+function patchBlobTextureLoader(loader: unknown) {
+  const bitmap = loader as {
+    isImageBitmapLoader?: boolean;
+    __blobOmit?: boolean;
+    load: (url: string, onLoad?: (image: ImageBitmap) => void, onProgress?: unknown, onError?: (error: unknown) => void) => unknown;
+  } | null | undefined;
+  if (!bitmap?.isImageBitmapLoader || bitmap.__blobOmit) return;
+  const original = bitmap.load.bind(bitmap);
+  bitmap.load = (url, onLoad, onProgress, onError) => {
+    if (!url.startsWith("blob:")) return original(url, onLoad, onProgress, onError);
+    fetch(url, { credentials: "omit" })
+      .then(response => {
+        if (!response.ok) throw new Error(`贴图响应 ${response.status}`);
+        return response.blob();
+      })
+      .then(blob => createImageBitmap(blob, { premultiplyAlpha: "none", colorSpaceConversion: "none" } as ImageBitmapOptions))
+      .then(image => onLoad?.(image))
+      .catch(error => onError?.(error));
+  };
+  bitmap.__blobOmit = true;
+}
+
 /** 配置里的正则既能写字符串（可跨服务端/客户端传递）也能直接给 RegExp */
 function toRegExp(value: string | RegExp | undefined, fallback: RegExp) {
   if (value === undefined) return fallback;
@@ -1490,6 +1513,7 @@ export function createShowcaseScene(options: ShowcaseOptions): ShowcaseHandle {
         const limit = textureLimit(requested, renderer.capabilities.maxTextureSize);
         if (current()) options.onTextureBudget?.(!compressed && limit < requested ? limit : null);
         options.onDecodeProgress?.(0, parser.json.images?.length ?? 0);
+        patchBlobTextureLoader((parser as { textureLoader?: unknown }).textureLoader);
         releaseImages = budgetImageDecoding(parser, limit, valid, error => { imageError ??= error; parseFailed = true; }, memoryConstrained && asset !== CFG.assets.previewModel && !asset.includes("-preview.glb"), size => { sourceTextureMax = Math.max(sourceTextureMax, size); }, done => options.onDecodeProgress?.(done, parser.json.images?.length ?? 0));
         return null;
       }

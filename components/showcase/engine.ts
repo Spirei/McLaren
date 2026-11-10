@@ -53,7 +53,24 @@ function patchBlobTextureLoader(loader: unknown) {
         if (!response.ok) throw new Error(`贴图响应 ${response.status}`);
         return response.blob();
       })
-      .then(blob => createImageBitmap(blob, { premultiplyAlpha: "none", colorSpaceConversion: "none" } as ImageBitmapOptions))
+      .then(async blob => {
+        try {
+          return await createImageBitmap(blob, { premultiplyAlpha: "none", colorSpaceConversion: "none" } as ImageBitmapOptions);
+        } catch {
+          const imageUrl = URL.createObjectURL(blob);
+          try {
+            const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+              const element = new Image();
+              element.onload = () => resolve(element);
+              element.onerror = () => reject(new Error("贴图解码失败"));
+              element.src = imageUrl;
+            });
+            return await createImageBitmap(image);
+          } finally {
+            URL.revokeObjectURL(imageUrl);
+          }
+        }
+      })
       .then(image => onLoad?.(image))
       .catch(error => onError?.(error));
   };

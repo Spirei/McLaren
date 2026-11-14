@@ -1206,7 +1206,7 @@ export default function ShowcaseStage({
               <button type="button" className="sc-tool fire-cap" onClick={() => setImmersiveView(true)} aria-label="进入沉浸式" title="沉浸式观看">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" /></svg>
               </button>
-              <div className="sc-accent">
+              {!inspector && <div className="sc-accent">
                 <button type="button" className="sc-tool fire-cap sc-accent-trigger" aria-label="主题配色" aria-expanded={accentOpen} title="主题配色" onClick={() => setAccentOpen(open => !open)}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M12 3.2a8.8 8.8 0 1 0 5.7 15.5c.7-.5 1.1-1.3 1.1-2.1 0-1.5-1.2-2.6-2.7-2.6h-1.2A2.2 2.2 0 0 1 12.7 12 2.2 2.2 0 0 0 14.9 9.8H16a4.6 4.6 0 0 0 0-1.5A8.8 8.8 0 0 0 12 3.2Z" />
@@ -1219,9 +1219,9 @@ export default function ShowcaseStage({
                   <label className={`sc-accent-dot custom${accentId === "custom" ? " on" : ""}`} title="自定义颜色">
                     <input type="color" value={/^#[0-9a-fA-F]{6}$/.test(customAccent) ? customAccent : "#2481CD"} aria-label="自定义颜色" onChange={(event) => { setCustomAccent(event.target.value); setAccentId("custom"); }} />
                   </label>
-                  {ACCENTS.map(item => <button key={item.id} type="button" className={accentId === item.id ? "on" : ""} style={{ background: item.hex }} aria-label={item.label} aria-pressed={accentId === item.id} onClick={() => { setAccentId(item.id); setAccentOpen(false); }} />)}
+                  {ACCENTS.map(item => <button key={item.id} type="button" className={accentId === item.id ? "on" : ""} style={{ background: item.hex, ["--dot" as string]: item.hex }} aria-label={item.label} aria-pressed={accentId === item.id} onClick={() => { setAccentId(item.id); setAccentOpen(false); }} />)}
                 </div>}
-              </div>
+              </div>}
               <button
                 type="button"
                 className="sc-tool fire-cap"

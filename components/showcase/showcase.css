@@ -1479,11 +1479,12 @@ html:has(.showcase) body {
 .sc-wire-modes button[aria-pressed="true"] { color: var(--glass-ink); font-weight: 600; }
 .showcase .lg-track button[aria-pressed="true"] { color: var(--glass-ink); font-weight: 650; }
 .showcase .lg-lens-body { background: color-mix(in srgb, var(--sc-theme, #e87722) 16%, var(--glass-surface, #fff)); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--sc-theme, #e87722) 70%, transparent); }
-.sc-accent { position: relative; }
+.sc-accent { position: relative; pointer-events: auto; }
 .sc-accent-trigger svg { width: 18px; height: 18px; }
-.sc-accent-row { position: absolute; top: calc(100% + 10px); right: 0; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 18px; background: color-mix(in srgb, var(--glass-surface, #fff) 92%, transparent); box-shadow: 0 10px 28px #0002; }
+.sc-accent-row { position: absolute; top: calc(100% + 10px); right: 0; z-index: 40; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 18px; pointer-events: auto; background: #f4f5f7; box-shadow: 0 10px 28px #0003; }
+.showcase:not(.light) .sc-accent-row { background: #1c1d20; }
 .sc-accent-row button, .sc-accent-dot { width: 26px; height: 26px; border-radius: 50%; flex: none; box-shadow: inset 0 0 0 1px #00000018; }
-.sc-accent-row button.on, .sc-accent-dot.on { box-shadow: 0 0 0 2px #fff, 0 0 0 4px currentColor; }
+.sc-accent-row button.on, .sc-accent-dot.on { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--dot, #2481CD); }
 .sc-accent-dot { position: relative; background: conic-gradient(#e85d4c, #f2c14e, #5cb85c, #3cb4d4, #8e79d8, #e85d4c); }
 .sc-accent-dot input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 .sc-wire-modes button:active { transform: scale(.95); }
@@ -1535,7 +1536,8 @@ html:has(.showcase) body {
 }
 .sc-inspecting .sc-watermark, .sc-inspecting .sc-vignette,
 .sc-inspecting .sc-hud > .sc-row:not(.sc-tools),
-.sc-inspecting .sc-tools > button { display: none !important; }
+.sc-inspecting .sc-tools > button,
+.sc-inspecting .sc-accent { display: none !important; }
 .sc-inspecting .sc-tools { z-index: 30; }
 
 /* 左右顶部入口共用轻量工具样式，后台入口不再单独使用玻璃底框。 */

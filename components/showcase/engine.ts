@@ -2840,7 +2840,7 @@ export function createShowcaseScene(options: ShowcaseOptions): ShowcaseHandle {
     }
     dragging = false; dragByTouch = false; dragPan = false; dragZoom = false; dragPointer = null;
     if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
-    options.onViewChange?.();
+    if (typeof options !== "undefined") options.onViewChange?.();
   };
   const cancelInteraction = () => {
     dragging = false; dragPan = false; dragZoom = false; dragPointer = null; touches.clear();

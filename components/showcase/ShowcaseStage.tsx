@@ -177,7 +177,7 @@ export default function ShowcaseStage({
     if (selectionTimerRef.current) clearTimeout(selectionTimerRef.current);
   }, []);
   const [leftDrawerOpen, setLeftDrawerOpen] = useState(false);
-  const [rightDrawerOpen, setRightDrawerOpen] = usePersistedState("fire:showcase:model-drawer", true);
+  const [rightDrawerOpen, setRightDrawerOpen] = useState(true);
   const leftDrawerRef = useRef<HTMLDivElement | null>(null);
   const rightDrawerRef = useRef<HTMLDivElement | null>(null);
   const [theme, setTheme] = useState<"dark" | "light">(initialTheme);

@@ -45,6 +45,8 @@ export default function HomeShowcase({
   const list = useMemo(() => (models.length ? models : []), [models]);
   const fallbackId = defaultModelId ?? DEFAULT_SHOWCASE_MODEL;
   const [storedId, setModelId] = usePersistedState<string>("fire:showcase:model", fallbackId);
+  const [viewReady, setViewReady] = useState(false);
+  useEffect(() => setViewReady(true), []);
   const [textureQuality] = usePersistedState<"fast" | "balanced" | "fine" | "original">("fire:showcase:texture-quality", "fast");
   const [wireMode] = usePersistedState<"native" | "overlay" | "wireframe">("fire:showcase:wire-mode", "native");
   // 选中的车可能已经被删掉 / 素材缺失：回落到默认那辆，避免整页空白
@@ -135,6 +137,8 @@ export default function HomeShowcase({
       })),
     [list, progress, status]
   );
+
+  if (!viewReady) return <div className="showcase" style={{ minHeight: "100dvh", background: "#050506" }} />;
 
   if (!current) return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-bg-gray p-6 text-ink dark:bg-[#111722] dark:text-white">

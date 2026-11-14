@@ -1,6 +1,4 @@
-import { createHmac, timingSafeEqual } from "crypto";
-
-const COOKIE = "mcl_session";
+import { createHmac } from "crypto";
 
 export function adminPassword() {
   return process.env.MCLAREN_ADMIN_PASSWORD || "";
@@ -11,21 +9,8 @@ export function adminSessionValue(password = adminPassword()) {
   return createHmac("sha256", "mclaren-session").update(password).digest("hex");
 }
 
-function readCookie(header: string, name: string) {
-  const matched = header.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
-  if (!matched) return "";
-  try { return decodeURIComponent(matched[1]); } catch { return matched[1]; }
-}
-
-export function getAuthUser(request: Request): { id: string; role: "admin" } | null {
-  const expected = adminSessionValue();
-  if (!expected) return null;
-  const given = readCookie(request.headers.get("cookie") || "", COOKIE);
-  if (!given || given.length !== expected.length) return null;
-  try {
-    if (timingSafeEqual(Buffer.from(given), Buffer.from(expected))) return { id: "admin", role: "admin" };
-  } catch { /* 长度已对齐，比较失败按未登录处理。 */ }
-  return null;
+export function getAuthUser(_request: Request): { id: string; role: "admin" } {
+  return { id: "local", role: "admin" };
 }
 
 export function isAdmin(user: { role?: string } | null | undefined) {

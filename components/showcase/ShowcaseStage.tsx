@@ -177,7 +177,7 @@ export default function ShowcaseStage({
     if (selectionTimerRef.current) clearTimeout(selectionTimerRef.current);
   }, []);
   const [leftDrawerOpen, setLeftDrawerOpen] = useState(false);
-  const [rightDrawerOpen, setRightDrawerOpen] = useState(false);
+  const [rightDrawerOpen, setRightDrawerOpen] = usePersistedState("fire:showcase:model-drawer", true);
   const leftDrawerRef = useRef<HTMLDivElement | null>(null);
   const rightDrawerRef = useRef<HTMLDivElement | null>(null);
   const [theme, setTheme] = useState<"dark" | "light">(initialTheme);
@@ -514,7 +514,13 @@ export default function ShowcaseStage({
           initialTheme: themeRef.current,
           config: { ...cfg, assets: { ...cfg.assets, model: initialAsset }, model: { ...cfg.model, maxTextureSize: TEXTURE_QUALITY[initialQuality].size } },
           // 置顶机位：引擎直接从置顶进度起步，不会先落到开场机位再弹回来
-          startProgress: pinnedPoseRef.current?.p ?? 0,
+          startProgress: livePoseRef.current?.p ?? pinnedPoseRef.current?.p ?? 0,
+          initialView: {
+            pose: livePoseRef.current ?? undefined,
+            freeCamera: freeCameraRef.current,
+            wireMode: wireRef.current.mode,
+            wireColor: wireRef.current.color
+          },
           hud: {
             scroll,
             stage,

@@ -3247,6 +3247,28 @@ export function createShowcaseScene(options: ShowcaseOptions): ShowcaseHandle {
       if (!inspectorOn) lastHomepageRender = now;
     }
   };
+  const boot = options.initialView;
+  if (boot?.wireMode) {
+    wireframeMode = boot.wireMode;
+    wireframeView.set(boot.wireMode, boot.wireColor ?? "#00ff00");
+  }
+  if (boot?.freeCamera) freeCamera = true;
+  if (boot?.pose) {
+    const pose = boot.pose;
+    if (typeof pose.yaw === "number" && Number.isFinite(pose.yaw)) userYaw = pose.yaw;
+    if (typeof pose.pitch === "number" && Number.isFinite(pose.pitch)) userPitch = clamp(pose.pitch, -Math.PI, Math.PI);
+    if (typeof pose.zoom === "number" && Number.isFinite(pose.zoom)) zoom = zoomTarget = pose.zoom;
+    if (typeof pose.p === "number" && Number.isFinite(pose.p)) {
+      const next = clamp(pose.p, 0, 1);
+      viewerProgress = next;
+      freeCameraProgress = next;
+      pSmooth = next;
+    }
+    if (pose.focus?.length === 3 && pose.focus.every(Number.isFinite)) {
+      focusTarget.fromArray(pose.focus);
+      focusOffset.copy(focusTarget);
+    }
+  }
   renderer.setAnimationLoop(tick);
   cleanups.push(() => renderer.setAnimationLoop(null));
 

@@ -400,6 +400,13 @@ export interface ShowcaseOptions {
   onResetView?: () => void;
   /** 拖拽、滚轮或切章节结束后，把当前车的机位交给界面保存。 */
   onViewChange?: () => void;
+  /** 首帧就用记住的机位和线框，避免先画默认再跳回去。 */
+  initialView?: {
+    pose?: { p?: number; yaw?: number; pitch?: number; zoom?: number; focus?: [number, number, number] };
+    freeCamera?: boolean;
+    wireMode?: "native" | "overlay" | "wireframe";
+    wireColor?: string;
+  };
   onError?: (message: string) => void;
 }
 
